@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Code Storage Service</title>
+  <style>
+    body {
+      background-color: #1f1f1f;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: #282828;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .form-container textarea {
+      width: 100%;
+      height: 300px;
+      background-color: #1f1f1f;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .form-container button {
+      background-color: #009688;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h1>Code Storage Service</h1>
+      <form id="uploadForm">
+        <textarea id="codeInput" placeholder="Enter your code or text here"></textarea>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      var codeInput = document.getElementById('codeInput');
+      var content = codeInput.value.trim();
+      
+      if (content !== '') {
+        fetch('/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 'content': content })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert('error occurred: ' + data.message);
+          } else {
+            window.location.href = '/raw/' + data.code;
+          }
+        })
+        .catch(error => {
+          alert('An error occurred while uploading the code.');
+          console.error(error);
+        });
+      } else {
+        alert('Please enter some code or text.');
+      }
+    });
+  </script>
+</body>
+</html>
